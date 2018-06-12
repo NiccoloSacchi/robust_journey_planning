@@ -53,10 +53,17 @@ class Planner():
             """ Given the id of the best edge check if we still are within the time. """
             if self.reverse:
                 best_day, best_time = self.edges.loc[best_edge_id, ["dep_day", "dep_time"]]
-                return best_day<max_day or best_time<max_time
+                if best_day<max_day:
+                    return True
+                elif best_day==max_day:
+                    return best_time<max_time
             else:
                 best_day, best_time = self.edges.loc[best_edge_id, ["arr_day", "arr_time"]]
-                return best_day>max_day or best_time>max_time
+                if best_day>max_day:
+                    return True
+                elif best_day==max_day:
+                    return best_time>max_time
+            return False
             
         if self.pairwise_distances is not None: 
             dist = self.pairwise_distances[start_node] # get all distances wrt the arrival node
@@ -424,7 +431,8 @@ class Planner():
         arr_time = curr_edge.arr_time + pd.Timedelta(days=curr_edge.arr_day)
         max_delay = dep_time - arr_time
         
-        assert max_delay >= pd.Timedelta("00:00:00"), "Error: negative max delay found in prob_connection"
+        max_delay -= pd.Timedelta("00:02:00")
+#         assert max_delay >= pd.Timedelta("00:00:00"), "Error: negative max delay found in prob_connection"
         return curr_edge.distribution.cdf(max_delay.seconds) 
     
     def gen_cadidate_transports(self, curr_edge):
