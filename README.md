@@ -20,15 +20,15 @@ Walking edges have also been added for closeby stations, and represented as foll
 ![image info](./img/walk_edges.JPG)
 
 ### 2. Modelling the delay probabilities
-Edges have been clustered with KMeans depending on their [20, 30, 40, 50, 60, 70, 80] qth percentiles delays. The elmbow method has been used to select the number of clusters:
+Edges have been clustered with KMeans depending on their [20, 30, 40, 50, 60, 70, 80] qth percentiles delays. The elbow method has been used to select the number of clusters:
+
 ![image info](./img/elbow_method.png)
+
 Edges with similar delays are associated with the same cluster and the delays of each cluster are then represented with a gamma distribution initialized with the mean and standart deviation of the delays of the whole cluster.
 We now create a  **distribution**  for each cluster and store them in the schedule. Why?
 
 -   We have few samples per edge which may not be representative enough of its delay distribution.
 -   It is reasonable that some edges' delays are dependent. The clusters have hopefully grouped edges whose delays are jointly dependent.
-
-Each edge is therefore associated with a distribution representing the distribution of the delay of that connection.
 
 ### 3. Implementation of the Journey Planner
 #### Problem setup
